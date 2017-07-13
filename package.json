@@ -1,0 +1,34 @@
+{
+  "name": "remarkable",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "rehype-autolink-headings": "^2.0.1",
+    "rehype-format": "^2.2.0",
+    "rehype-highlight": "^2.0.1",
+    "rehype-react": "^3.0.0",
+    "remark": "^7.0.1",
+    "remark-autolink-headings": "^5.0.0",
+    "remark-github": "^7.0.1",
+    "remark-html": "^6.0.1",
+    "remark-parse": "^3.0.1",
+    "remark-preset-lint-recommended": "^2.0.0",
+    "remark-react": "^4.0.0",
+    "remark-react-lowlight": "^0.4.1",
+    "remark-rehype": "^2.0.1",
+    "remark-slug": "^4.2.3",
+    "semantic-ui-react": "^0.71.0",
+    "unified": "^6.1.5"
+  },
+  "devDependencies": {
+    "react-scripts": "1.0.10"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
