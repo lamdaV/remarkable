@@ -27,7 +27,7 @@ class App extends Component {
           .filter((line) => line.startsWith('#'))
           .map((header, index) => {
             const content = header.split(' ').splice(1);
-            const ref = `#${content.join('-')}`;
+            const ref = `#${content.join('-').toLowerCase()}`;
             const display = content.join(' ');
             return (
               <div key={index}>
@@ -59,7 +59,6 @@ class App extends Component {
 
   render() {
     const contentZIndex = 99;
-    console.log(window.innerHeight)
     const tableOfContentStyle = {
       position: "fixed",
       top: "15px",
