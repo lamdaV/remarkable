@@ -1,4 +1,8 @@
-import React, {Component} from 'react';
+import React, {Component} from "react";
+import {Button, Container, Form, Header, Segment, TextArea} from "semantic-ui-react";
+import * as firebase from "firebase";
+// import * as google from "googleapis";
+
 import unified from "unified";
 import markdown from "remark-parse";
 import slug from "remark-slug";
@@ -6,7 +10,8 @@ import headings from "rehype-autolink-headings";
 import remark2rehype from "remark-rehype";
 import rehype2react from "rehype-react";
 
-import {Container, Form, Header, Segment, TextArea} from 'semantic-ui-react'
+const authProvider = new firebase.auth.GoogleAuthProvider();
+authProvider.addScope("https://www.googleapis.com/auth/drive.file");
 
 class App extends Component {
   constructor(props) {
@@ -15,9 +20,32 @@ class App extends Component {
     this.state = {
       markdown: null,
       tocLinks: [],
+      signedIn: false,
+      accessToken: null
     };
+
     this.handleChange = this.handleChange.bind(this);
-    this.updateTOC = this.updateTOC
+    this.updateTOC = this.updateTOC.bind(this);
+    this.signIn = this.signIn.bind(this);
+    this.signOut = this.signOut.bind(this);
+  }
+
+  signIn(event, data) {
+    firebase.auth().signInWithPopup(authProvider)
+      .then((result) => {
+        this.setState({signedIn: true});
+        console.log(result);
+      }).catch((error) => {
+        console.log("[FIREBASE] ", error);
+      });
+  }
+
+  signOut(event, data) {
+    firebase.auth().signOut().then(() => {
+      this.setState({signedIn: false});
+    }).catch((error) => {
+      console.log("[FIREBASE] ", error);
+    });
   }
 
   updateTOC(text) {
@@ -57,6 +85,20 @@ class App extends Component {
       });
   }
 
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged((user) => {
+      console.log("[ USER ]", user)
+      if (user) {
+        console.log("[ SIGNED IN ]", user.displayName);
+        this.setState({
+          signedIn: true
+        });
+      } else {
+        console.log("[ NOT SIGNED IN ]");
+      }
+    });
+  }
+
   render() {
     const contentZIndex = 99;
     const tableOfContentStyle = {
@@ -68,9 +110,17 @@ class App extends Component {
       overflow: 'auto',
       zIndex: contentZIndex
     };
+    const googleSignInStyle = {
+      position: "fixed",
+      bottom: "15px",
+      right: "15px"
+    };
     const containerStyle = {
       zIndex: contentZIndex - 10
     };
+
+    const signInIcon = this.state.signedIn ? "sign out" : "google";
+    const signInText = this.state.signedIn ? "Sign Out" : "Google Sign In";
 
     return (
       <Container>
@@ -81,6 +131,14 @@ class App extends Component {
             {this.state.tocLinks}
           </Segment>
         }
+
+        <Button
+          basic
+          icon={signInIcon}
+          style={googleSignInStyle}
+          color={this.state.signedIn ? "red" : "blue"}
+          content={signInText}
+          onClick={this.state.signedIn ? this.signOut : this.signIn} />
 
         <Container text style={containerStyle}>
           <Header size="large">
